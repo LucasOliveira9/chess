@@ -1,19 +1,9 @@
 "use client";
 import { config } from "@/app/lib/chess.config";
-import Image from "next/image";
 import { useState } from "react";
 import Piece from "./piece";
+import Tile from "./tile";
 
-import styles from "./styles/board.module.css";
-
-const tileStyle = {
-  height: "4.5em",
-  width: "100%",
-  flex: "0 0 calc(12.5%)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
 const Board = () => {
   const [board, setBoard] = useState<string[]>(config.board);
 
@@ -38,19 +28,19 @@ const Board = () => {
 
         if ((index + 1) % 8 == 0) row++;
 
-        return (
-          <div
+        return x !== "e" ? (
+          <Tile
             id={config.id[index]}
-            className={`square`}
-            key={`obj${config.id[index]}`}
-            style={{
-              ...tileStyle,
-              backgroundColor: `${(index + 1) % 2 === 0 ? primary : secondary}`,
-            }}
-          >
-            {/*config.board[index]*/}
-            {x !== "e" && <Piece board={board} setBoard={setBoard} x={x} />}
-          </div>
+            key={`tile${index}`}
+            background={(index + 1) % 2 == 0 ? primary : secondary}
+            children={<Piece board={board} setBoard={setBoard} x={x} />}
+          />
+        ) : (
+          <Tile
+            id={config.id[index]}
+            key={`tile${index}`}
+            background={(index + 1) % 2 == 0 ? primary : secondary}
+          />
         );
       })}
     </div>

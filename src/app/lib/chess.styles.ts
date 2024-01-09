@@ -1,4 +1,4 @@
-import styles from "../ui/styles/board.module.css";
+import styles from "../ui/styles/tile.module.css";
 
 class Styles {
   public static Selected(id: string) {
@@ -9,7 +9,7 @@ class Styles {
   }
 
   public static Remove() {
-    const Elements = document.querySelectorAll(".square");
+    const Elements = document.querySelectorAll(".tile");
     if (!Elements) return;
 
     Elements.forEach((element) => {
