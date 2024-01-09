@@ -1,10 +1,13 @@
 "use client";
 import { config } from "@/app/lib/chess.config";
 import Image from "next/image";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
+import Piece from "./piece";
+
+import styles from "./styles/board.module.css";
 
 const tileStyle = {
-  height: "5em",
+  height: "4.5em",
   width: "100%",
   flex: "0 0 calc(12.5%)",
   display: "flex",
@@ -13,84 +16,17 @@ const tileStyle = {
 };
 const Board = () => {
   const [board, setBoard] = useState<string[]>(config.board);
-  const handleMouseDown = (e: MouseEvent<HTMLImageElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const piece = e.target as HTMLImageElement;
-    const curr = piece?.parentElement?.id;
 
-    if (!curr || !piece || e.buttons !== 1) return;
-    const idx = config.id.indexOf(curr);
-
-    let x = e.clientX - piece.getBoundingClientRect().left;
-    let y = e.clientY - piece.getBoundingClientRect().top;
-
-    piece.style.zIndex = "1000";
-    piece.style.position = "absolute";
-    piece.style.cursor = "grabbing";
-
-    const width = piece.style.width;
-    const height = piece.style.height;
-
-    document.body.append(piece);
-
-    piece.style.width = width;
-    piece.style.height = height;
-
-    const MoveAt = (px: number, py: number) => {
-      const moveX = px - x,
-        moveY = py - y;
-
-      piece.style.left = `${moveX}px`;
-      piece.style.top = `${moveY}px`;
-    };
-
-    MoveAt(e.pageX, e.pageY);
-
-    const onMouseMove = (event: Event) => {
-      event.preventDefault();
-      const target = event as unknown as MouseEvent;
-
-      MoveAt(target.pageX, target.pageY);
-    };
-
-    document.addEventListener("mousemove", onMouseMove);
-
-    piece.onmouseup = (ev: Event) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      const target = ev as unknown as MouseEvent;
-      const down = document.elementsFromPoint(target.clientX, target.clientY);
-      const id = down[1].nodeName === "IMG" ? down[2].id : down[1].id;
-      const sqr = config.id.indexOf(id);
-
-      if (idx !== sqr) {
-        const last = board[idx];
-        board[idx] = "e";
-        const newBoard = [...board];
-        newBoard[sqr] = last;
-        setBoard(newBoard);
-        console.log(idx + " " + board);
-      }
-
-      if (document.body.contains(piece)) {
-        document.body.removeChild(piece);
-        document.removeEventListener("mousemove", onMouseMove);
-        piece.onmouseup = null;
-      }
-    };
-  };
   let row = 1;
   return (
     <div
       style={{
         display: "flex",
-        maxWidth: "50em",
+        maxWidth: "40em",
         width: "100%",
         flexWrap: "wrap",
         overflow: "auto",
-        border: "3px onset green",
+        border: "3px outset green",
       }}
     >
       {board.map((x: string, index: number) => {
@@ -105,6 +41,7 @@ const Board = () => {
         return (
           <div
             id={config.id[index]}
+            className={`square`}
             key={`obj${config.id[index]}`}
             style={{
               ...tileStyle,
@@ -112,16 +49,7 @@ const Board = () => {
             }}
           >
             {/*config.board[index]*/}
-            {x !== "e" && (
-              <Image
-                src={`/images/${config.image[x as keyof typeof config.image]}`}
-                alt=""
-                width={55}
-                height={50}
-                style={{ cursor: "grab" }}
-                onMouseDown={handleMouseDown}
-              />
-            )}
+            {x !== "e" && <Piece board={board} setBoard={setBoard} x={x} />}
           </div>
         );
       })}
