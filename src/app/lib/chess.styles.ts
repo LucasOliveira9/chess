@@ -14,6 +14,9 @@ class Styles {
 
     Elements.forEach((element) => {
       element.classList.remove(styles.selected);
+      element
+        .querySelector(`.${styles.bullet}`)
+        ?.classList.add(`${styles.none}`);
     });
   }
 }
