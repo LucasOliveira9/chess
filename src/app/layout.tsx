@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import SideNav from "./ui/sidenav";
+import WebsocketConnect from "./lib/websocket.connect";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} style={{ display: "flex", gap: "1em" }}>
+        <WebsocketConnect />
         <div>
           <SideNav />
         </div>
