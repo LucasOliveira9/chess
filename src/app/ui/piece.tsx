@@ -4,16 +4,13 @@ import Image from "next/image";
 import { config } from "@/app/lib/chess.config";
 import React from "react";
 import Styles from "../lib/chess.styles";
+import { useFreemodeContext } from "../lib/context/freemode.context/freemode.provider";
+import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
+import { stompClientFreemode } from "../lib/socket";
+import Move from "../lib/utils/move";
 
-const Piece = ({
-  board,
-  setBoard,
-  x,
-}: {
-  board: string[];
-  setBoard: React.Dispatch<React.SetStateAction<string[]>>;
-  x: string;
-}) => {
+const Piece = ({ x }: { x: string }) => {
+  const { state, dispatch } = useFreemodeContext();
   const handleMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -25,6 +22,7 @@ const Piece = ({
 
     if (!curr || !clonedPiece || !piece || e.buttons !== 1) return;
     Styles.Selected(curr);
+    dispatch({ type: "SETSELECTED", payload: curr });
     const idx = config.id.indexOf(curr);
 
     let x = e.clientX - piece.getBoundingClientRect().left;
@@ -81,17 +79,30 @@ const Piece = ({
 
       clonedPiece.remove();
       if (
-        idx !== sqr &&
+        state.poss.get(curr) &&
+        state.poss.get(curr)?.includes(id) &&
         idx !== -1 &&
         sqr !== -1 &&
         pieceAlliance !== enemieAlliance
       ) {
-        const last = board[idx];
-        board[idx] = "e";
-        const newBoard = [...board];
+        let subscribe = stompClientFreemode?.subscribe(
+          "/user/queue/freemode/move_status",
+          (data: any) => {
+            const response = JSON.parse(data.body);
+            Move(idx, sqr, null, response, "Free", subscribe);
+          }
+        );
+        FreemodeHandler.Move({ from: curr, to: id, promotion: null });
+        const last = state.board[idx];
+        state.board[idx] = "e";
+        const newBoard = [...state.board];
         newBoard[sqr] = last;
-        setBoard(newBoard);
-      } else piece.style.opacity = "1";
+
+        dispatch({ type: "SETBOARD", payload: newBoard });
+        dispatch({ type: "SETSELECTED", payload: null });
+      } else {
+        piece.style.opacity = "1";
+      }
 
       document.removeEventListener("mousemove", onMouseMove);
     };
