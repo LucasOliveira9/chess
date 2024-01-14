@@ -1,23 +1,25 @@
+import { Subscription } from "stompjs";
+import Styles from "../chess.styles";
 import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
 
 const Move = (
-  from: number,
-  to: number,
-  pr: string | null,
   data: any,
   mode: "Free" | "Multi",
-  subscribe: any
+  subscribe: Subscription | undefined
 ) => {
   const move = data;
   const dispatch = mode === "Free" ? FreemodeHandler.dispatch : null;
-  console.log(move);
+
   subscribe && subscribe.unsubscribe();
-    subscribe = null;
 
   if (!move.status || !dispatch)
     return /*!onClick ? currSqr.appendChild(piece) :*/ null;
 
   //console.log(`${sqr.parentElement.id} -> ${currSqr.parentElement.id}`);
+  dispatch({
+    type: "SETBOARD",
+    payload: move.board,
+  });
 
   data.game_status === "checkmate" &&
     dispatch({
@@ -64,10 +66,6 @@ const Move = (
   dispatch({
     type: "SETCAPTURED",
     payload: move.captured,
-  });
-  dispatch({
-    type: "SETBOARD",
-    payload: move.board,
   });
 
   /*if (mode === "Multi" && move.game_status !== "on_game")

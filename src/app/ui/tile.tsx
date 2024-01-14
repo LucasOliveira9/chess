@@ -1,9 +1,14 @@
 import { config } from "../lib/chess.config";
+import Styles from "../lib/chess.styles";
+import { useFreemodeContext } from "../lib/context/freemode.context/freemode.provider";
+import { stompClientFreemode } from "../lib/socket";
+import Move from "../lib/utils/move";
+import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
 import styles from "./styles/tile.module.css";
 
 const tileStyle = {
   height: "4.5em",
-  width: "100%",
+  width: "4.5em",
   flex: "0 0 calc(12.5%)",
   display: "flex",
   alignItems: "center",
@@ -14,47 +19,45 @@ const Tile = ({
   children,
   id,
   background,
-  state,
-  setBoard,
 }: {
   children?: React.ReactNode;
   id: string;
   background: string;
-  state: {
-    position: string[];
-    pieceSelected: null | string;
-  };
-  setBoard: React.Dispatch<
-    React.SetStateAction<{ position: string[]; pieceSelected: null | string }>
-  >;
 }) => {
+  const { state, dispatch } = useFreemodeContext();
+
   const handleClick = (e: React.MouseEvent) => {
     const el = e.target as HTMLDivElement;
-    if (!state.pieceSelected) return;
-    const piece = document
-      .getElementById(state.pieceSelected)
-      ?.querySelector("img");
-    const enemie = document.getElementById(el.id)?.querySelector("img");
-    const pieceIndex = config.id.indexOf(state.pieceSelected);
+    if (!state.selected) return;
+
+    const pieceIndex = config.id.indexOf(state.selected);
     const enemieIndex = config.id.indexOf(el.id);
 
     if (
-      enemie &&
-      piece?.getAttribute("data-alliance") ===
-        enemie.getAttribute("data-alliance")
-    )
+      !state.poss.get(state.selected) ||
+      !state.poss.get(state.selected)?.includes(id)
+    ) {
+      dispatch({ type: "SETSELECTED", payload: null });
+      Styles.Remove();
       return;
+    }
 
-    state.position[enemieIndex] = state.position[pieceIndex];
-    state.position[pieceIndex] = "e";
-    const newBoard = [...state.position];
-    setBoard((state) => {
-      return {
-        ...state,
-        position: newBoard,
-        pieceSelected: null,
-      };
-    });
+    let subscribe = stompClientFreemode?.subscribe(
+      "/user/queue/freemode/move_status",
+      (data: any) => {
+        const response = JSON.parse(data.body);
+        Move(response, "Free", subscribe);
+      }
+    );
+    FreemodeHandler.Move({ from: state.selected, to: id, promotion: null });
+
+    state.board[enemieIndex] = state.board[pieceIndex];
+    state.board[pieceIndex] = "e";
+    const newBoard = [...state.board];
+
+    Styles.Remove();
+    dispatch({ type: "SETBOARD", payload: newBoard });
+    dispatch({ type: "SETSELECTED", payload: null });
   };
   return (
     <div

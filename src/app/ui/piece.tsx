@@ -9,7 +9,7 @@ import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
 import { stompClientFreemode } from "../lib/socket";
 import Move from "../lib/utils/move";
 
-const Piece = ({ x }: { x: string }) => {
+const Piece = ({ type }: { type: string }) => {
   const { state, dispatch } = useFreemodeContext();
   const handleMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
     e.preventDefault();
@@ -21,6 +21,8 @@ const Piece = ({ x }: { x: string }) => {
     const curr = piece?.parentElement?.id;
 
     if (!curr || !clonedPiece || !piece || e.buttons !== 1) return;
+
+    if (curr !== state.selected) Styles.Remove();
     Styles.Selected(curr);
     dispatch({ type: "SETSELECTED", payload: curr });
     const idx = config.id.indexOf(curr);
@@ -68,36 +70,29 @@ const Piece = ({ x }: { x: string }) => {
       const down = document.elementsFromPoint(target.clientX, target.clientY);
       const id = down[1].nodeName === "IMG" ? down[2].id : down[1].id;
       const sqr = config.id.indexOf(id);
-      const pieceAlliance = document
-        .getElementById(curr)
-        ?.querySelector("img")
-        ?.getAttribute("data-alliance");
-      const enemieAlliance = document
-        .getElementById(id)
-        ?.querySelector("img")
-        ?.getAttribute("data-alliance");
 
       clonedPiece.remove();
       if (
         state.poss.get(curr) &&
         state.poss.get(curr)?.includes(id) &&
         idx !== -1 &&
-        sqr !== -1 &&
-        pieceAlliance !== enemieAlliance
+        sqr !== -1
       ) {
         let subscribe = stompClientFreemode?.subscribe(
           "/user/queue/freemode/move_status",
           (data: any) => {
             const response = JSON.parse(data.body);
-            Move(idx, sqr, null, response, "Free", subscribe);
+            Move(response, "Free", subscribe);
           }
         );
         FreemodeHandler.Move({ from: curr, to: id, promotion: null });
+
         const last = state.board[idx];
         state.board[idx] = "e";
         const newBoard = [...state.board];
         newBoard[sqr] = last;
 
+        Styles.Remove();
         dispatch({ type: "SETBOARD", payload: newBoard });
         dispatch({ type: "SETSELECTED", payload: null });
       } else {
@@ -109,14 +104,15 @@ const Piece = ({ x }: { x: string }) => {
   };
   return (
     <Image
-      src={`/images/${config.image[x as keyof typeof config.image]}`}
+      src={`/images/${config.image[type as keyof typeof config.image]}`}
       alt=""
       width={55}
       height={50}
-      style={{ cursor: "grab", userSelect: "none" }}
+      style={{ cursor: "grab", userSelect: "none", zIndex: "1000" }}
       draggable="false"
       onMouseDown={handleMouseDown}
-      data-alliance={x.toLowerCase() === x ? "b" : "w"}
+      data-alliance={type.toLowerCase() === type ? "b" : "w"}
+      data-type={type}
     />
   );
 };

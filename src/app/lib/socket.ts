@@ -44,14 +44,13 @@ function onConnectFreemode(frame: Frame | undefined) {
     "/user/queue/freemode/set_board",
     (data: any) => {
       const response = JSON.parse(data.body);
-      //FreemodeHandler.SetBoard(response);
+      FreemodeHandler.SetBoard(response);
     }
   );
 }
 
-export function newGame() {
+export function newGame(id: string | null) {
   if (!stompClientFreemode) return;
-  const id = localStorage.getItem("freemode");
   stompClientFreemode.send(
     "/chess/topic/freemode/new_game",
     {},
