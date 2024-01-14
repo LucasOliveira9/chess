@@ -8,6 +8,7 @@ import { newGame, stompClientFreemode } from "../lib/socket";
 import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
 import { usePathname } from "next/navigation";
 import tileStyles from "./styles/tile.module.css";
+import Styles from "../lib/chess.styles";
 
 const Board = () => {
   const { state, dispatch } = useFreemodeContext();
@@ -22,7 +23,7 @@ const Board = () => {
   const path = usePathname();
 
   useEffect(() => {
-    if (path === "/freemode" && !connected && !stompClientFreemode?.connected) {
+    if (path === "/freemode" && !connected) {
       const interval: NodeJS.Timeout = setInterval(() => {
         if (stompClientFreemode?.connected) {
           Freemode(interval);
@@ -34,21 +35,66 @@ const Board = () => {
   useEffect(() => {
     if (!state.selected) return;
     const curr: string[] | undefined = state.poss.get(state.selected);
+    const selected = document
+      .getElementById(state.selected)
+      ?.querySelector("img");
+    const enPassant =
+      state.fen && state.fen.split(" ")[3].length == 2
+        ? state.fen.split(" ")[3]
+        : null;
+    if (!curr || !selected) return;
 
-    if (!curr) return;
     for (const p of curr) {
-      console.log(p);
       const element = document
         .getElementById(p)
         ?.querySelector(`.${tileStyles.bullet}`);
-      console.log(element);
-      element?.classList.remove(`${tileStyles.none}`);
+      const enemie = document.getElementById(p)?.querySelector("img");
+
+      /*En Passant danger logic*/
+      if (
+        selected.getAttribute("data-type")?.toLowerCase() === "p" &&
+        enPassant &&
+        enPassant.slice(0, 1) === p.slice(0, 1) &&
+        state.selected.slice(0, 1) !== p.slice(0, 1)
+      ) {
+        if (
+          +enPassant.slice(1) === +p.slice(1) + 1 ||
+          +enPassant.slice(1) === +p.slice(1) - 1
+        ) {
+          const enemie = document
+            .getElementById(enPassant)
+            ?.querySelector("img");
+          enemie &&
+          selected.getAttribute("data-alliance") !==
+            enemie.getAttribute("data-alliance")
+            ? document
+                .getElementById(enPassant)
+                ?.classList.add(tileStyles.danger)
+            : null;
+        }
+      }
+      /* */
+
+      if (
+        enemie &&
+        selected.getAttribute("data-alliance") ===
+          enemie.getAttribute("data-alliance")
+      )
+        Styles.Selected(p);
+      else if (
+        enemie &&
+        selected.getAttribute("data-alliance") !==
+          enemie.getAttribute("data-alliance")
+      )
+        document.getElementById(p)?.classList.add(tileStyles.danger);
+      else element?.classList.remove(tileStyles.none);
     }
   }, [state.selected]);
 
   function Freemode(interval: NodeJS.Timeout) {
     FreemodeHandler.setDispatch(dispatch);
-    newGame();
+    const id = localStorage.getItem("freemode");
+    newGame(id);
     setConnected(true);
     clearInterval(interval);
   }
@@ -79,17 +125,13 @@ const Board = () => {
             id={config.id[index]}
             key={`tile${index}`}
             background={(index + 1) % 2 == 0 ? primary : secondary}
-            children={<Piece x={x} />}
-            state={board}
-            setBoard={setBoard}
+            children={<Piece type={x} />}
           />
         ) : (
           <Tile
             id={config.id[index]}
             key={`tile${index}`}
             background={(index + 1) % 2 == 0 ? primary : secondary}
-            state={board}
-            setBoard={setBoard}
           />
         );
       })}

@@ -4,7 +4,6 @@ class Styles {
   public static Selected(id: string) {
     const Element = document.getElementById(id);
     if (!Element) return;
-    Styles.Remove();
     Element.classList.add(styles.selected);
   }
 
@@ -14,6 +13,7 @@ class Styles {
 
     Elements.forEach((element) => {
       element.classList.remove(styles.selected);
+      element.classList.remove(styles.danger);
       element
         .querySelector(`.${styles.bullet}`)
         ?.classList.add(`${styles.none}`);
