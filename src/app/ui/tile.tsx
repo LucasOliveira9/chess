@@ -4,16 +4,8 @@ import { useFreemodeContext } from "../lib/context/freemode.context/freemode.pro
 import { stompClientFreemode } from "../lib/socket";
 import Move from "../lib/utils/move";
 import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
+import Image from "next/image";
 import styles from "./styles/tile.module.css";
-
-const tileStyle = {
-  height: "4.5em",
-  width: "4.5em",
-  flex: "0 0 calc(12.5%)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
 
 const Tile = ({
   children,
@@ -59,15 +51,77 @@ const Tile = ({
     dispatch({ type: "SETBOARD", payload: newBoard });
     dispatch({ type: "SETSELECTED", payload: null });
   };
+
+  const classWhite =
+    +id.slice(0, 1) === 1 ? styles.whitePromotion : styles.blackPromotion;
+  const classBlack =
+    +id.slice(0, 1) === 8 ? styles.blackPromotion : styles.whitePromotion;
+
   return (
     <div
       id={id}
-      style={{ ...tileStyle, backgroundColor: background }}
-      className={`tile`}
+      style={{ backgroundColor: background }}
+      className={styles.tile}
       onClick={handleClick}
     >
       <div className={`${styles.none} ${styles.bullet}`}></div>
       {children}
+      {(+id.slice(-1) === 1 || +id.slice(-1) === 8) && (
+        <div
+          className={`${+id.slice(-1) === 1 ? classWhite : classBlack} ${
+            styles.promotion
+          } `}
+        >
+          <Image
+            src={
+              +id.slice(-1) === 1
+                ? `/images/BlackQueen.png`
+                : "/images/WhiteQueen.png"
+            }
+            className={styles.promotionImg}
+            alt=""
+            data-type={+id.slice(-1) === 1 ? `q` : "Q"}
+            width={55}
+            height={50}
+          />
+          <Image
+            src={
+              +id.slice(-1) === 1
+                ? `/images/BlackRook.png`
+                : "/images/WhiteRook.png"
+            }
+            className={styles.promotionImg}
+            alt=""
+            data-type={+id.slice(-1) === 1 ? `r` : "R"}
+            width={55}
+            height={50}
+          />
+          <Image
+            src={
+              +id.slice(-1) === 1
+                ? `/images/BlackBishop.png`
+                : "/images/WhiteBishop.png"
+            }
+            className={styles.promotionImg}
+            alt=""
+            data-type={+id.slice(-1) === 1 ? `b` : "B"}
+            width={55}
+            height={50}
+          />
+          <Image
+            src={
+              +id.slice(-1) === 1
+                ? `/images/BlackKnight.png`
+                : "/images/WhiteKnight.png"
+            }
+            className={styles.promotionImg}
+            alt=""
+            data-type={+id.slice(-1) === 1 ? `n` : "N"}
+            width={55}
+            height={50}
+          />
+        </div>
+      )}
     </div>
   );
 };

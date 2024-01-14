@@ -1,3 +1,13 @@
+.tile {
+  position: relative;
+  height: 4.5em;
+  width: 4.5em;
+
+  display: flex;
+  flex: 0 0 calc(12.5%);
+  justify-content: center;
+  align-items: center;
+}
 .selected {
   background-color: rgba(191, 255, 0, 0.844) !important;
 }
@@ -20,4 +30,32 @@
 
 .none {
   display: none;
+}
+
+.promotion {
+  display: none;
+  background-color: rgba(203, 174, 174, 0.75);
+  position: absolute;
+  padding: 0.5em 0;
+  width: 100%;
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.promotionImg {
+  pointer-events: inherit;
+}
+
+.blackPromotion {
+  bottom: 0;
+}
+
+.whitePromotion {
+  top: 0;
 }

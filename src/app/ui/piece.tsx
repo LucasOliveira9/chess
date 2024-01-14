@@ -72,12 +72,7 @@ const Piece = ({ type }: { type: string }) => {
       const sqr = config.id.indexOf(id);
 
       clonedPiece.remove();
-      if (
-        state.poss.get(curr) &&
-        state.poss.get(curr)?.includes(id) &&
-        idx !== -1 &&
-        sqr !== -1
-      ) {
+      if (state.poss.get(curr) && state.poss.get(curr)?.includes(id)) {
         let subscribe = stompClientFreemode?.subscribe(
           "/user/queue/freemode/move_status",
           (data: any) => {
