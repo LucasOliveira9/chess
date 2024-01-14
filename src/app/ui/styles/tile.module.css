@@ -1,6 +1,13 @@
 .selected {
   background-color: rgba(191, 255, 0, 0.844) !important;
 }
+.danger {
+  background-color: rgba(255, 32, 32, 0.9) !important;
+}
+
+.danger > img {
+  pointer-events: none;
+}
 
 .bullet {
   background-color: rgb(200, 255, 0);
