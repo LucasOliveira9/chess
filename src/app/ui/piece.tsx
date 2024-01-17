@@ -8,6 +8,9 @@ import { useFreemodeContext } from "../lib/context/freemode.context/freemode.pro
 import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
 import { stompClientFreemode } from "../lib/socket";
 import Move from "../lib/utils/move";
+import Promotion from "../lib/utils/promotion";
+
+import tileStyles from "./styles/tile.module.css";
 
 const Piece = ({ type }: { type: string }) => {
   const { state, dispatch } = useFreemodeContext();
@@ -73,6 +76,12 @@ const Piece = ({ type }: { type: string }) => {
 
       clonedPiece.remove();
       if (state.poss.get(curr) && state.poss.get(curr)?.includes(id)) {
+        /*Promotion*/
+        if ((sqr >= 56 || sqr <= 7) && state.board[idx].toLowerCase() === "p") {
+          Promotion(curr, id, idx, sqr, state, dispatch);
+          return;
+        }
+        /*Other Moves Types*/
         let subscribe = stompClientFreemode?.subscribe(
           "/user/queue/freemode/move_status",
           (data: any) => {
@@ -90,9 +99,7 @@ const Piece = ({ type }: { type: string }) => {
         Styles.Remove();
         dispatch({ type: "SETBOARD", payload: newBoard });
         dispatch({ type: "SETSELECTED", payload: null });
-      } else {
-        piece.style.opacity = "1";
-      }
+      } else piece.style.opacity = "1";
 
       document.removeEventListener("mousemove", onMouseMove);
     };
@@ -103,9 +110,9 @@ const Piece = ({ type }: { type: string }) => {
       alt=""
       width={55}
       height={50}
-      style={{ cursor: "grab", userSelect: "none", zIndex: "1000" }}
       draggable="false"
       onMouseDown={handleMouseDown}
+      className={tileStyles.piece}
       data-alliance={type.toLowerCase() === type ? "b" : "w"}
       data-type={type}
     />

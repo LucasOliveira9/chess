@@ -12,13 +12,6 @@ import Styles from "../lib/chess.styles";
 
 const Board = () => {
   const { state, dispatch } = useFreemodeContext();
-  const [board, setBoard] = useState<{
-    position: string[];
-    pieceSelected: null | string;
-  }>({
-    position: config.board,
-    pieceSelected: null,
-  });
   const [connected, setConnected] = useState<boolean>(false);
   const path = usePathname();
 
@@ -42,17 +35,21 @@ const Board = () => {
       state.fen && state.fen.split(" ")[3].length == 2
         ? state.fen.split(" ")[3]
         : null;
+    const idx = config.id.indexOf(state.selected);
+
     if (!curr || !selected) return;
 
     for (const p of curr) {
       const element = document
         .getElementById(p)
         ?.querySelector(`.${tileStyles.bullet}`);
-      const enemie = document.getElementById(p)?.querySelector("img");
+      const enemie = document
+        .getElementById(p)
+        ?.querySelector(`.${tileStyles.piece}`);
 
       /*En Passant danger logic*/
       if (
-        selected.getAttribute("data-type")?.toLowerCase() === "p" &&
+        state.board[idx].toLowerCase() === "p" &&
         enPassant &&
         enPassant.slice(0, 1) === p.slice(0, 1) &&
         state.selected.slice(0, 1) !== p.slice(0, 1)
@@ -63,7 +60,7 @@ const Board = () => {
         ) {
           const enemie = document
             .getElementById(enPassant)
-            ?.querySelector("img");
+            ?.querySelector(`.${tileStyles.piece}`);
           enemie &&
           selected.getAttribute("data-alliance") !==
             enemie.getAttribute("data-alliance")

@@ -11,16 +11,16 @@ const Move = (
   const dispatch = mode === "Free" ? FreemodeHandler.dispatch : null;
 
   subscribe && subscribe.unsubscribe();
+  console.log(move);
 
-  if (!move.status || !dispatch)
-    return /*!onClick ? currSqr.appendChild(piece) :*/ null;
+  if (!move.status || !dispatch) return;
 
-  //console.log(`${sqr.parentElement.id} -> ${currSqr.parentElement.id}`);
   dispatch({
     type: "SETBOARD",
     payload: move.board,
   });
 
+  Styles.Remove();
   data.game_status === "checkmate" &&
     dispatch({
       type: "SETWINNER",

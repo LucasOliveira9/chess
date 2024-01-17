@@ -70,7 +70,6 @@ export const SetBoard = async (
     fen: formData.get("setboard"),
   });
 
-  console.log(validatedFields);
   if (!validatedFields.success)
     return {
       message:

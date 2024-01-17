@@ -7,6 +7,7 @@
   flex: 0 0 calc(12.5%);
   justify-content: center;
   align-items: center;
+  user-select: none;
 }
 .selected {
   background-color: rgba(191, 255, 0, 0.844) !important;
@@ -19,6 +20,12 @@
   pointer-events: none;
 }
 
+.piece {
+  cursor: grab;
+  user-select: none;
+  z-index: 1000;
+}
+
 .bullet {
   background-color: rgb(200, 255, 0);
   width: 1.25em;
@@ -29,18 +36,17 @@
 }
 
 .none {
-  display: none;
+  display: none !important;
 }
 
 .promotion {
-  display: none;
+  display: flex;
   background-color: rgba(203, 174, 174, 0.75);
   position: absolute;
   padding: 0.5em 0;
   width: 100%;
   z-index: 2000;
 
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;

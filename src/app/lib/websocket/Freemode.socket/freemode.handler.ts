@@ -9,6 +9,7 @@ class FreemodeHandler {
   }
   public static NewGame(data: any) {
     localStorage.setItem("freemode", data.id);
+
     if (!FreemodeHandler.dispatch) return;
     Styles.Remove();
     const poss = new Map();

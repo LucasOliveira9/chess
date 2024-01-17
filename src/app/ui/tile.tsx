@@ -6,6 +6,7 @@ import Move from "../lib/utils/move";
 import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
 import Image from "next/image";
 import styles from "./styles/tile.module.css";
+import Promotion from "../lib/utils/promotion";
 
 const Tile = ({
   children,
@@ -31,6 +32,18 @@ const Tile = ({
     ) {
       dispatch({ type: "SETSELECTED", payload: null });
       Styles.Remove();
+      return;
+    }
+
+    if (
+      (enemieIndex >= 56 || enemieIndex <= 7) &&
+      state.board[pieceIndex].toLowerCase() === "p"
+    ) {
+      const piece = document
+        .getElementById(state.selected)
+        ?.querySelector(`.${styles.piece}`);
+      piece && ((piece as HTMLElement).style.opacity = "0");
+      Promotion(state.selected, id, enemieIndex, pieceIndex, state, dispatch);
       return;
     }
 
@@ -70,7 +83,7 @@ const Tile = ({
         <div
           className={`${+id.slice(-1) === 1 ? classWhite : classBlack} ${
             styles.promotion
-          } `}
+          } ${styles.none} `}
         >
           <Image
             src={
