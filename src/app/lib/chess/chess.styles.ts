@@ -1,4 +1,4 @@
-import styles from "../ui/styles/tile.module.css";
+import styles from "@/app/ui/styles/tile/index.module.scss";
 
 class Styles {
   public static Selected(id: string) {

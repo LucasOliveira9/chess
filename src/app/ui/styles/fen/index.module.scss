@@ -1,0 +1,10 @@
+@import "src/variables";
+.main {
+  margin-top: 0.5em;
+  padding: 0.25em;
+
+  border: $dark-border;
+  background: $gradient-background;
+  font-family: $main-font;
+  text-align: center;
+}

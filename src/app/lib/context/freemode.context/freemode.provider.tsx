@@ -8,7 +8,7 @@ import React, {
 
 import Reducer from "./freemode.reducer";
 import { IFreemodeContext, IState } from "./freemode.interface";
-import { config } from "../../chess.config";
+import { config } from "../../chess/chess.config";
 
 export const STATE: IState = {
   poss: new Map(),

@@ -1,6 +1,6 @@
-import Styles from "../../chess.styles";
+import Styles from "../../chess/chess.styles";
 import { TAction } from "../../context/freemode.context/freemode.interface";
-import { stompClientFreemode } from "../../socket";
+import { stompClientFreemode } from "../../socket/socket";
 
 class FreemodeHandler {
   static dispatch: React.Dispatch<TAction> | null;
@@ -21,7 +21,7 @@ class FreemodeHandler {
       payload: data.board,
     });
     FreemodeHandler.dispatch({ type: "SETPOSS", payload: poss });
-    FreemodeHandler.dispatch({ type: "SETNOTATION", payload: [] });
+    FreemodeHandler.dispatch({ type: "SETNOTATION", payload: data.notation });
     FreemodeHandler.dispatch({
       type: "SETHISTORY",
       payload: data.board_track,

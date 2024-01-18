@@ -1,5 +1,5 @@
 import { Subscription } from "stompjs";
-import Styles from "../chess.styles";
+import Styles from "../chess/chess.styles";
 import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
 
 const Move = (
@@ -11,7 +11,6 @@ const Move = (
   const dispatch = mode === "Free" ? FreemodeHandler.dispatch : null;
 
   subscribe && subscribe.unsubscribe();
-  console.log(move);
 
   if (!move.status || !dispatch) return;
 

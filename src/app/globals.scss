@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap");
+
+@import "src/variables";
+
+html {
+  display: inline-block;
+  body {
+    margin: 0 !important;
+    box-sizing: border-box;
+    background-color: $main-background;
+    font-family: $main-font;
+
+    a {
+      text-decoration: none;
+      color: Black;
+    }
+
+    ul {
+      li {
+        list-style: none;
+      }
+    }
+  }
+}

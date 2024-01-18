@@ -1,0 +1,41 @@
+@import "src/variables";
+
+.notation {
+  min-height: 8em;
+  max-height: 8em;
+  height: 100%;
+  max-width: 16em;
+  padding: 0.35em;
+  overflow: auto;
+
+  margin-top: 0.5em;
+
+  border: $dark-border;
+  background: $gradient-background;
+
+  .notation__container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    line-height: 1.2;
+    font-size: 0.85rem;
+    font-family: $main-font;
+    color: $alternative-black;
+
+    .span__start {
+      display: flex;
+      .span__number {
+        cursor: default;
+        margin-right: 10px;
+      }
+    }
+
+    span {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+
+  @media (max-width: 310px) {
+    width: 13em;
+  }
+}

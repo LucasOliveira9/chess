@@ -1,4 +1,4 @@
-import { stompClientFreemode } from "./socket";
+import { stompClientFreemode } from "../socket/socket";
 import { z } from "zod";
 
 const SetBoardSchema = z.object({

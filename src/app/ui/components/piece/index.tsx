@@ -1,16 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { config } from "@/app/lib/chess.config";
+import { config } from "@/app/lib/chess/chess.config";
 import React from "react";
-import Styles from "../lib/chess.styles";
-import { useFreemodeContext } from "../lib/context/freemode.context/freemode.provider";
-import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
-import { stompClientFreemode } from "../lib/socket";
-import Move from "../lib/utils/move";
-import Promotion from "../lib/utils/promotion";
+import Styles from "@/app/lib/chess/chess.styles";
+import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
+import FreemodeHandler from "@/app/lib/websocket/Freemode.socket/freemode.handler";
+import { stompClientFreemode } from "@/app/lib/socket/socket";
+import Move from "@/app/lib/utils/move";
+import Promotion from "@/app/lib/utils/promotion";
 
-import tileStyles from "./styles/tile.module.css";
+import tileStyles from "../../styles/tile/index.module.scss";
 
 const Piece = ({ type }: { type: string }) => {
   const { state, dispatch } = useFreemodeContext();
@@ -99,6 +99,7 @@ const Piece = ({ type }: { type: string }) => {
         Styles.Remove();
         dispatch({ type: "SETBOARD", payload: newBoard });
         dispatch({ type: "SETSELECTED", payload: null });
+        dispatch({ type: "SETPOSS", payload: new Map() });
       } else piece.style.opacity = "1";
 
       document.removeEventListener("mousemove", onMouseMove);
@@ -115,6 +116,8 @@ const Piece = ({ type }: { type: string }) => {
       className={tileStyles.piece}
       data-alliance={type.toLowerCase() === type ? "b" : "w"}
       data-type={type}
+      placeholder="blur"
+      blurDataURL={`/images/${config.image[type as keyof typeof config.image]}`}
     />
   );
 };

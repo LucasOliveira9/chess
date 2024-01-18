@@ -1,0 +1,20 @@
+$gradient-background: linear-gradient(
+  to left,
+  rgb(241, 114, 4),
+  rgb(252, 145, 4)
+);
+$gradient_background_rgba: linear-gradient(
+  to left,
+  rgba(241, 114, 4, 0.75),
+  rgba(252, 145, 4, 0.75)
+);
+$light_background: rgba(253, 249, 249, 0.95);
+$main_background: rgb(32, 33, 36);
+$dark-border: 3px outset rgb(115, 44, 0);
+$main-font: "Lato", sans-serif;
+$secundary_font: "Tangerine", cursive;
+$alternative-black: rgb(22, 18, 18);
+$dark_tile: rgb(115, 44, 0);
+$dark_tile_selected: rgba(134, 46, 5, 0.75);
+$green: rgb(119, 149, 86);
+$light_tile: rgb(214, 118, 9);

@@ -1,10 +1,9 @@
-import tileStyles from "../../ui/styles/tile.module.css";
-import Styles from "../chess.styles";
+import tileStyles from "@/app/ui/styles/tile/index.module.scss";
 import {
   IState,
   TAction,
 } from "../context/freemode.context/freemode.interface";
-import { stompClientFreemode } from "../socket";
+import { stompClientFreemode } from "../socket/socket";
 import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
 import Move from "./move";
 
@@ -47,11 +46,11 @@ const Promotion = (
 
         dispatch({ type: "SETBOARD", payload: newBoard });
         dispatch({ type: "SETSELECTED", payload: null });
+        dispatch({ type: "SETPOSS", payload: new Map() });
 
         this.removeEventListener("click", Promotion);
 
         this.parentElement && this.parentElement.classList.add(tileStyles.none);
-        //Styles.Remove();
       },
       false
     );

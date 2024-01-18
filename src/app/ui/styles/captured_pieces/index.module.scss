@@ -1,0 +1,16 @@
+.captured {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+
+  div {
+    display: flex;
+
+    img {
+      width: 1em;
+      height: 1em;
+
+      margin-right: -0.6em;
+    }
+  }
+}

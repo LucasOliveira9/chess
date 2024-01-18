@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import styles from "@/app/ui/styles/sidenav/index.module.scss";
+
 const listStyle = {
   padding: "2em",
   fontSize: "1.5rem",
@@ -12,15 +14,7 @@ const SideNav = () => {
   const path = usePathname();
 
   return (
-    <main
-      style={{
-        height: "100vh",
-        backgroundColor: "green",
-        width: "100%",
-        minWidth: "25em",
-        position: "relative",
-      }}
-    >
+    <main className={styles.main}>
       <Link href="/">
         <div
           style={{ width: "100%", height: "30vh", backgroundColor: "gray" }}

@@ -1,14 +1,17 @@
 "use client";
-import { config } from "@/app/lib/chess.config";
+import { config } from "@/app/lib/chess/chess.config";
 import { useEffect, useState } from "react";
-import Piece from "./piece";
-import Tile from "./tile";
-import { useFreemodeContext } from "../lib/context/freemode.context/freemode.provider";
-import { newGame, stompClientFreemode } from "../lib/socket";
-import FreemodeHandler from "../lib/websocket/Freemode.socket/freemode.handler";
+import Piece from "@/app/ui/components/piece";
+import Tile from "@/app/ui/components/tile";
+import Captured from "../captured_pieces";
+import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
+import { newGame, stompClientFreemode } from "@/app/lib/socket/socket";
+import FreemodeHandler from "@/app/lib/websocket/Freemode.socket/freemode.handler";
 import { usePathname } from "next/navigation";
-import tileStyles from "./styles/tile.module.css";
-import Styles from "../lib/chess.styles";
+import Styles from "@/app/lib/chess/chess.styles";
+
+import tileStyles from "@/app/ui/styles/tile/index.module.scss";
+import styles from "@/app/ui/styles/board/index.module.scss";
 
 const Board = () => {
   const { state, dispatch } = useFreemodeContext();
@@ -98,41 +101,57 @@ const Board = () => {
 
   let row = 1;
   return (
-    <div
-      style={{
-        display: "flex",
-        maxWidth: "40em",
-        width: "100%",
-        flexWrap: "wrap",
-        overflow: "auto",
-        border: "3px outset green",
-      }}
-    >
-      {state.board.map((x: string, index: number) => {
-        let primary = "",
-          secondary = "";
-        if (row % 2 === 0)
-          (primary = "rgb(214,118,9)"), (secondary = "rgb(134,46,5)");
-        else (primary = "rgb(134,46,5)"), (secondary = "rgb(214,118,9)");
+    <>
+      <div id="blackCapture" className={styles.captured}>
+        <Captured color="white" piece="P" />
+        <Captured color="white" piece="B" />
+        <Captured color="white" piece="N" />
+        <Captured color="white" piece="R" />
+        <Captured color="white" piece="Q" />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          maxWidth: "40em",
+          width: "100%",
+          flexWrap: "wrap",
+          overflow: "auto",
+          border: "3px outset rgb(134, 46, 5)",
+        }}
+      >
+        {state.board.map((x: string, index: number) => {
+          let primary = "",
+            secondary = "";
+          if (row % 2 === 0)
+            (primary = "rgb(214,118,9)"), (secondary = "rgb(134,46,5)");
+          else (primary = "rgb(134,46,5)"), (secondary = "rgb(214,118,9)");
 
-        if ((index + 1) % 8 == 0) row++;
+          if ((index + 1) % 8 == 0) row++;
 
-        return x !== "e" ? (
-          <Tile
-            id={config.id[index]}
-            key={`tile${index}`}
-            background={(index + 1) % 2 == 0 ? primary : secondary}
-            children={<Piece type={x} />}
-          />
-        ) : (
-          <Tile
-            id={config.id[index]}
-            key={`tile${index}`}
-            background={(index + 1) % 2 == 0 ? primary : secondary}
-          />
-        );
-      })}
-    </div>
+          return x !== "e" ? (
+            <Tile
+              id={config.id[index]}
+              key={`tile${index}`}
+              background={(index + 1) % 2 == 0 ? primary : secondary}
+              children={<Piece type={x} />}
+            />
+          ) : (
+            <Tile
+              id={config.id[index]}
+              key={`tile${index}`}
+              background={(index + 1) % 2 == 0 ? primary : secondary}
+            />
+          );
+        })}
+      </div>
+      <div id="whiteCapture" className={styles.captured}>
+        <Captured color="black" piece="p" />
+        <Captured color="black" piece="b" />
+        <Captured color="black" piece="n" />
+        <Captured color="black" piece="r" />
+        <Captured color="black" piece="q" />
+      </div>
+    </>
   );
 };
 
