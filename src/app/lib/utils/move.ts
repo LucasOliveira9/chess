@@ -1,6 +1,6 @@
 import { Subscription } from "stompjs";
 import Styles from "../chess/chess.styles";
-import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "../websocket/freemode.socket/freemode.handler";
 
 const Move = (
   data: any,
@@ -20,30 +20,17 @@ const Move = (
   });
 
   Styles.Remove();
-  data.game_status === "checkmate" &&
-    dispatch({
-      type: "SETWINNER",
-      payload: data.winner.toLowerCase(),
-    });
-
-  const canAppendPieceMoves = [
-    "Normal",
-    "White_EnPassant",
-    "Black_EnPassant",
-    "Promotion",
-  ];
-  /*moveHandler(
-      piece,
-      move.flag,
-      move.promotion,
-      move.move_type,
-      move.game_status
-    );*/
+  if (data.game_status === "checkmate") {
+    mode === "Multi" &&
+      dispatch({
+        type: "SETWINNER",
+        payload: data.winner.toLowerCase(),
+      });
+  }
 
   const poss = new Map();
 
   for (const i in data.allPossibleMoves) poss.set(i, data.allPossibleMoves[i]);
-  //Remove();
 
   dispatch({ type: "SETSELECTED", payload: null });
   dispatch({
@@ -51,7 +38,6 @@ const Move = (
     payload: poss,
   });
 
-  //this.updateFen(move.fen);
   dispatch({
     type: "SETNOTATION",
     payload: move.notation,
