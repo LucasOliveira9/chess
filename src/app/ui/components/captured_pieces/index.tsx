@@ -1,9 +1,10 @@
 "use client";
 
 import { config } from "@/app/lib/chess/chess.config";
-import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
+import { useContext } from "@/app/lib/context/context";
 import styles from "@/app/ui/styles/captured_pieces/index.module.scss";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const CapturedPieces = ({
   color,
@@ -12,7 +13,8 @@ const CapturedPieces = ({
   color: "white" | "black";
   piece: string;
 }) => {
-  const { state } = useFreemodeContext();
+  const path = usePathname();
+  const { state, dispatch } = useContext(path);
 
   const pieces = {
     p: "Pawn",

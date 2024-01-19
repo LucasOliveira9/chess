@@ -1,12 +1,14 @@
 import { config } from "../../../lib/chess/chess.config";
 import Styles from "@/app/lib/chess/chess.styles";
-import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
 import { stompClientFreemode } from "@/app/lib/socket/socket";
 import Move from "@/app/lib/utils/move";
-import FreemodeHandler from "@/app/lib/websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "@/app/lib/websocket/freemode.socket/freemode.handler";
 import Image from "next/image";
 import styles from "../../styles/tile/index.module.scss";
 import Promotion from "@/app/lib/utils/promotion";
+import LocalMove from "@/app/lib/utils/move.local";
+import { usePathname } from "next/navigation";
+import { useContext } from "@/app/lib/context/context";
 
 const Tile = ({
   children,
@@ -17,7 +19,8 @@ const Tile = ({
   id: string;
   background: string;
 }) => {
-  const { state, dispatch } = useFreemodeContext();
+  const path = usePathname();
+  const { state, dispatch } = useContext(path);
 
   const handleClick = (e: React.MouseEvent) => {
     const el = e.target as HTMLDivElement;
@@ -55,15 +58,7 @@ const Tile = ({
       }
     );
     FreemodeHandler.Move({ from: state.selected, to: id, promotion: null });
-
-    state.board[enemieIndex] = state.board[pieceIndex];
-    state.board[pieceIndex] = "e";
-    const newBoard = [...state.board];
-
-    Styles.Remove();
-    dispatch({ type: "SETBOARD", payload: newBoard });
-    dispatch({ type: "SETSELECTED", payload: null });
-    dispatch({ type: "SETPOSS", payload: new Map() });
+    LocalMove(pieceIndex, enemieIndex, state, dispatch);
   };
 
   const classWhite =

@@ -3,8 +3,12 @@ import {
   IState,
   TAction,
 } from "../context/freemode.context/freemode.interface";
+import {
+  IState as MState,
+  TAction as MAction,
+} from "../context/multiplayer.context/multiplayer.interface";
 import { stompClientFreemode } from "../socket/socket";
-import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "../websocket/freemode.socket/freemode.handler";
 import Move from "./move";
 
 const Promotion = (
@@ -12,8 +16,8 @@ const Promotion = (
   to: string,
   idx: number,
   sqr: number,
-  state: IState,
-  dispatch: React.Dispatch<TAction>
+  state: IState | MState,
+  dispatch: React.Dispatch<TAction> | React.Dispatch<MAction>
 ) => {
   const promotion = document
     .getElementById(to)

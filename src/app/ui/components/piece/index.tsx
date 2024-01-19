@@ -4,16 +4,20 @@ import Image from "next/image";
 import { config } from "@/app/lib/chess/chess.config";
 import React from "react";
 import Styles from "@/app/lib/chess/chess.styles";
-import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
-import FreemodeHandler from "@/app/lib/websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "@/app/lib/websocket/freemode.socket/freemode.handler";
 import { stompClientFreemode } from "@/app/lib/socket/socket";
 import Move from "@/app/lib/utils/move";
 import Promotion from "@/app/lib/utils/promotion";
 
 import tileStyles from "../../styles/tile/index.module.scss";
+import LocalMove from "@/app/lib/utils/move.local";
+import { usePathname } from "next/navigation";
+import { useContext } from "@/app/lib/context/context";
 
 const Piece = ({ type }: { type: string }) => {
-  const { state, dispatch } = useFreemodeContext();
+  const path = usePathname();
+  const { state, dispatch } = useContext(path);
+
   const handleMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -90,16 +94,7 @@ const Piece = ({ type }: { type: string }) => {
           }
         );
         FreemodeHandler.Move({ from: curr, to: id, promotion: null });
-
-        const last = state.board[idx];
-        state.board[idx] = "e";
-        const newBoard = [...state.board];
-        newBoard[sqr] = last;
-
-        Styles.Remove();
-        dispatch({ type: "SETBOARD", payload: newBoard });
-        dispatch({ type: "SETSELECTED", payload: null });
-        dispatch({ type: "SETPOSS", payload: new Map() });
+        LocalMove(idx, sqr, state, dispatch);
       } else piece.style.opacity = "1";
 
       document.removeEventListener("mousemove", onMouseMove);
@@ -116,7 +111,6 @@ const Piece = ({ type }: { type: string }) => {
       className={tileStyles.piece}
       data-alliance={type.toLowerCase() === type ? "b" : "w"}
       data-type={type}
-      placeholder="blur"
       blurDataURL={`/images/${config.image[type as keyof typeof config.image]}`}
     />
   );

@@ -1,14 +1,14 @@
 "use client";
-import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 import styles from "@/app/ui/styles/notation/index.module.scss";
+import { useContext } from "@/app/lib/context/context";
 
 const Notation = () => {
-  const { state, dispatch } = useFreemodeContext();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const path = usePathname();
+  const { state, dispatch } = useContext(path);
 
   useEffect(() => {
     const element = containerRef.current;

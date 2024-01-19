@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import Piece from "@/app/ui/components/piece";
 import Tile from "@/app/ui/components/tile";
 import Captured from "../captured_pieces";
-import { useFreemodeContext } from "@/app/lib/context/freemode.context/freemode.provider";
 import { newGame, stompClientFreemode } from "@/app/lib/socket/socket";
-import FreemodeHandler from "@/app/lib/websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "@/app/lib/websocket/freemode.socket/freemode.handler";
 import { usePathname } from "next/navigation";
 import Styles from "@/app/lib/chess/chess.styles";
 
 import tileStyles from "@/app/ui/styles/tile/index.module.scss";
 import styles from "@/app/ui/styles/board/index.module.scss";
+import { useContext } from "@/app/lib/context/context";
 
 const Board = () => {
-  const { state, dispatch } = useFreemodeContext();
-  const [connected, setConnected] = useState<boolean>(false);
   const path = usePathname();
+  const { state, dispatch } = useContext(path);
+  const [connected, setConnected] = useState<boolean>(false);
 
   useEffect(() => {
     if (path === "/freemode" && !connected) {
