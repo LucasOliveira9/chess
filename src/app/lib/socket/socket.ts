@@ -1,6 +1,6 @@
 import SockJS from "sockjs-client";
 import Stomp, { Client, Frame } from "stompjs";
-import FreemodeHandler from "../websocket/Freemode.socket/freemode.handler";
+import FreemodeHandler from "../websocket/freemode.socket/freemode.handler";
 
 let stompClientFreemode: Client | null;
 const stompClientMultiplayer: Client | null = Stomp.over(
