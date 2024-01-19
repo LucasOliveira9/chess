@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import styles from "@/app/ui/styles/sidenav/index.module.scss";
+import { useMultiplayerContext } from "@/app/lib/context/multiplayer.context/multiplayer.provider";
 
 const listStyle = {
   padding: "2em",
@@ -11,6 +12,7 @@ const listStyle = {
 };
 
 const SideNav = () => {
+  const { state } = useMultiplayerContext();
   const path = usePathname();
 
   return (
@@ -42,9 +44,11 @@ const SideNav = () => {
             </ul>
           </nav>
         </div>
-        {path === "/multiplayer" && (
-          <div style={{ position: "absolute", bottom: "15px" }}>Room</div>
-        )}
+        {path === "/multiplayer" && state.onRoom ? (
+          <div style={{ position: "absolute", bottom: "15px" }}>
+            {state.room}
+          </div>
+        ) : null}
       </div>
     </main>
   );

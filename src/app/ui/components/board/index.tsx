@@ -1,11 +1,10 @@
 "use client";
 import { config } from "@/app/lib/chess/chess.config";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Piece from "@/app/ui/components/piece";
 import Tile from "@/app/ui/components/tile";
 import Captured from "../captured_pieces";
-import { newGame, stompClientFreemode } from "@/app/lib/socket/socket";
-import FreemodeHandler from "@/app/lib/websocket/freemode.socket/freemode.handler";
+
 import { usePathname } from "next/navigation";
 import Styles from "@/app/lib/chess/chess.styles";
 
@@ -15,18 +14,7 @@ import { useContext } from "@/app/lib/context/context";
 
 const Board = () => {
   const path = usePathname();
-  const { state, dispatch } = useContext(path);
-  const [connected, setConnected] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (path === "/freemode" && !connected) {
-      const interval: NodeJS.Timeout = setInterval(() => {
-        if (stompClientFreemode?.connected) {
-          Freemode(interval);
-        }
-      }, 100);
-    } else null;
-  }, []);
+  const { state } = useContext(path);
 
   useEffect(() => {
     if (!state.selected) return;
@@ -90,14 +78,6 @@ const Board = () => {
       else element?.classList.remove(tileStyles.none);
     }
   }, [state.selected]);
-
-  function Freemode(interval: NodeJS.Timeout) {
-    FreemodeHandler.setDispatch(dispatch);
-    const id = localStorage.getItem("freemode");
-    newGame(id);
-    setConnected(true);
-    clearInterval(interval);
-  }
 
   let row = 1;
   return (
