@@ -1,0 +1,45 @@
+@import "src/variables";
+.multiplayer__room {
+  height: 100vh;
+  width: 100%;
+  margin-left: 21em;
+
+  background-color: $main-background;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .multiplayer__joinRoom {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1.5em;
+
+    background: $gradient-background;
+
+    h3 {
+      line-height: 0.1;
+      font-family: $main-font;
+    }
+    input {
+      outline: none;
+      padding: 0.5rem;
+
+      &:invalid {
+        border: 2px solid red;
+      }
+    }
+
+    .multiplayer__joinIconsContainer {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+
+      .multiplayer__joinIcons {
+        cursor: pointer;
+        font-size: 3rem;
+      }
+    }
+  }
+}
