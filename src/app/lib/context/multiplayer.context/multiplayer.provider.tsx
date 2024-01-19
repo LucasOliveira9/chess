@@ -1,3 +1,4 @@
+"use client";
 import { config } from "@/app/lib/chess/chess.config";
 import { IMultiplayerContext, IState } from "./multiplayer.interface";
 import {
