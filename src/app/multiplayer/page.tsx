@@ -1,17 +1,17 @@
 "use client";
-import { MultiplayerContextProvider } from "../lib/context/multiplayer.context/multiplayer.provider";
-import Board from "../ui/components/board";
-import Notation from "../ui/components/notation";
+
+import { useEffect } from "react";
+import { useMultiplayerContext } from "../lib/context/multiplayer.context/multiplayer.provider";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  return (
-    <main style={{ marginLeft: "21em" }}>
-      <MultiplayerContextProvider>
-        <Board />
-        <Notation />
-      </MultiplayerContextProvider>
-    </main>
-  );
+  const { state } = useMultiplayerContext();
+  const router = useRouter();
+  useEffect(() => {
+    if (state.onRoom === false) router.push("/multiplayer/room/enter");
+    else if (state.onRoom === true) router.push("/multiplayer/room/game");
+  }, [state.onRoom]);
+  return null;
 };
 
 export default Page;
