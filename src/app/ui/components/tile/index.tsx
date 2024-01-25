@@ -1,14 +1,9 @@
 import { config } from "../../../lib/chess/chess.config";
-import Styles from "@/app/lib/chess/chess.styles";
-import { stompClientFreemode } from "@/app/lib/socket/socket";
-import Move from "@/app/lib/utils/move";
-import FreemodeHandler from "@/app/lib/websocket/freemode.socket/freemode.handler";
 import Image from "next/image";
 import styles from "../../styles/tile/index.module.scss";
-import Promotion from "@/app/lib/utils/promotion";
-import LocalMove from "@/app/lib/utils/move.local";
 import { usePathname } from "next/navigation";
 import { useContext } from "@/app/lib/context/context";
+import HandleMove from "@/app/lib/chess/chess.move.handlemove";
 
 const Tile = ({
   children,
@@ -21,45 +16,7 @@ const Tile = ({
 }) => {
   const path = usePathname();
   const { state, dispatch } = useContext(path);
-
-  const handleClick = (e: React.MouseEvent) => {
-    const el = e.target as HTMLDivElement;
-    if (!state.selected) return;
-
-    const pieceIndex = config.id.indexOf(state.selected);
-    const enemieIndex = config.id.indexOf(el.id);
-
-    if (
-      !state.poss.get(state.selected) ||
-      !state.poss.get(state.selected)?.includes(id)
-    ) {
-      dispatch({ type: "SETSELECTED", payload: null });
-      Styles.Remove();
-      return;
-    }
-
-    if (
-      (enemieIndex >= 56 || enemieIndex <= 7) &&
-      state.board[pieceIndex].toLowerCase() === "p"
-    ) {
-      const piece = document
-        .getElementById(state.selected)
-        ?.querySelector(`.${styles.piece}`);
-      piece && ((piece as HTMLElement).style.opacity = "0");
-      Promotion(state.selected, id, enemieIndex, pieceIndex, state, dispatch);
-      return;
-    }
-
-    let subscribe = stompClientFreemode?.subscribe(
-      "/user/queue/freemode/move_status",
-      (data: any) => {
-        const response = JSON.parse(data.body);
-        Move(response, "Free", subscribe);
-      }
-    );
-    FreemodeHandler.Move({ from: state.selected, to: id, promotion: null });
-    LocalMove(pieceIndex, enemieIndex, state, dispatch);
-  };
+  const handleMove = new HandleMove(state, dispatch, path);
 
   const classWhite =
     +id.slice(0, 1) === 1 ? styles.whitePromotion : styles.blackPromotion;
@@ -71,7 +28,7 @@ const Tile = ({
       id={id}
       style={{ backgroundColor: background }}
       className={styles.tile}
-      onClick={handleClick}
+      onClick={(e) => handleMove.handleClick(e, id)}
     >
       <div className={`${styles.none} ${styles.bullet}`}></div>
       {children}
