@@ -88,10 +88,15 @@ function onConnectMutiplayer(frame: Frame | undefined) {
 
 export function Reconnect(id: string | null) {
   if (!stompClientMultiplayer) return;
+
   stompClientMultiplayer.send(
     `/chess/topic/multiplayer/room/reconnect`,
     {},
-    JSON.stringify({ id, player: "", room: "" })
+    JSON.stringify({
+      id,
+      player: "",
+      room: "",
+    })
   );
 }
 

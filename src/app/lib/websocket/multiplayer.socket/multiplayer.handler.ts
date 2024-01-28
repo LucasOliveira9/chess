@@ -9,7 +9,7 @@ class MultiplayerHandler {
   }
 
   public static JoinStatus(response: any) {
-    if (!MultiplayerHandler.dispatch) return;
+    if (!MultiplayerHandler.dispatch || !response) return;
     console.log(response);
     if (response.status) {
       localStorage.setItem("multiplayer", response.id);
